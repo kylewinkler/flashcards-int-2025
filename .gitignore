@@ -1,0 +1,28 @@
+# Ignore all node_modules everywhere
+node_modules/
+
+# Ignore environment files (recommended for security)
+.env
+.env.* 
+
+# Optional: Ignore build artifacts
+dist/
+build/
+
+# Optional: Ignore logs and system files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Optional: OS-specific
+.DS_Store
+Thumbs.db
+
+# Optional: IDE-specific (VSCode, JetBrains, etc.)
+.vscode/
+.idea/
+
+# Optional: TypeScript cache
+*.tsbuildinfo
