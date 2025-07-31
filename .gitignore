@@ -3,7 +3,6 @@ node_modules/
 
 # Ignore environment files (recommended for security)
 .env
-.env.* 
 
 # Optional: Ignore build artifacts
 dist/
