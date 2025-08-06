@@ -1,11 +1,28 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { FlashcardsModule } from './flashcards/flashcards.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import * as process from 'node:process';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), MongooseModule.forRoot(process.env.MONGO_CONNECTION_STRING ?? '')],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      graphiql: true,
+      typePaths: ['./**/*.graphql'],
+    }),
+    MongooseModule.forRoot(process.env.MONGO_CONNECTION_STRING || ''),
+    FlashcardsModule,
+    UsersModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

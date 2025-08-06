@@ -1,0 +1,9 @@
+type Flashcard {
+    id: ID!
+    front: String!
+    back: String!
+}
+
+type Query {
+    getFlashcards: [Flashcard!]!
+}
