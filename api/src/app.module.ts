@@ -8,6 +8,7 @@ import * as process from 'node:process';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UsersModule } from './users/users.module';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -18,6 +19,10 @@ import { UsersModule } from './users/users.module';
       driver: ApolloDriver,
       graphiql: true,
       typePaths: ['./**/*.graphql'],
+      definitions: {
+        path: join(process.cwd(), 'src/graphql.ts'),
+        outputAs: 'class',
+      },
     }),
     MongooseModule.forRoot(process.env.MONGO_CONNECTION_STRING || ''),
     FlashcardsModule,

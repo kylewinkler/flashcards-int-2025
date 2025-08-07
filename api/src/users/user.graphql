@@ -5,6 +5,10 @@ type User {
     email: String!
 }
 
+type Query {
+    getUsers: [User!]!
+}
+
 input CreateUserInput {
     firstName: String!
     lastName: String!
@@ -12,10 +16,12 @@ input CreateUserInput {
     password: String!
 }
 
-type Query {
-    getUsers: [User!]!
+input LoginInput {
+    email: String!
+    password: String!
 }
 
 type Mutation {
     createUser(createUserInput: CreateUserInput!): String!
+    login(loginInput: LoginInput!): String!
 }
