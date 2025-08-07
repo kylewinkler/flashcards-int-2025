@@ -6,6 +6,7 @@ import {
   InputType,
   Field,
 } from '@nestjs/graphql';
+import { UsersService } from './users.service';
 
 @InputType()
 class CreateUserInput {
@@ -13,29 +14,29 @@ class CreateUserInput {
   firstName: string;
 
   @Field()
+  lastName: string;
+
+  @Field()
   email: string;
 
   @Field()
-  lastName: string;
+  password: string;
 }
 
 @Resolver('User')
 export class UsersResolver {
+  constructor(private readonly usersService: UsersService) {}
+
   @Query('getUsers')
-  getUsers() {
-    return [
-      {
-        id: 1,
-        firstName: 'Joe',
-        lastName: 'Smith',
-        email: 'joesmith@gmail.com',
-      },
-    ];
+  async getUsers() {
+    return this.usersService.findAll();
   }
 
   @Mutation('createUser')
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    console.log(createUserInput);
+  async createUser(
+    @Args('createUserInput') createUserInput: CreateUserInput,
+  ): Promise<string> {
+    await this.usersService.create(createUserInput);
     return 'SUCCESS';
   }
 }

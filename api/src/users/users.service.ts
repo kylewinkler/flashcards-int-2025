@@ -1,0 +1,28 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User } from './user.schema';
+import * as bcrypt from 'bcrypt';
+
+@Injectable()
+export class UsersService {
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) {}
+
+  async create(createUserInput: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+  }): Promise<User> {
+    const {password, ...rest} = createUserInput;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new this.userModel({...rest, password: hashedPassword});
+    return user.save();
+  }
+
+  async findAll(): Promise<User[]> {
+    return this.userModel.find().exec();
+  }
+}
