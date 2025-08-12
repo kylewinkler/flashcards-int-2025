@@ -1,9 +1,15 @@
 import { Resolver, Query } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from '../auth/gql-auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
 
 @Resolver('Flashcard')
 export class FlashcardResolver {
   @Query('getFlashcards')
-  getFlashcards() {
+  @UseGuards(GqlAuthGuard)
+  getFlashcards(@CurrentUser() user: any) {
+    console.log('Authenticated user:', user);
+    
     return [
       { id: 1, front: 'Movie', back: 'Pelicula' },
       { id: 2, front: 'To Learn', back: 'Aprender' },
