@@ -2,6 +2,7 @@ import type {ReactNode} from "react";
 import Flashcards from "../pages/Flashcards/Flaschards.tsx";
 import Home from "../pages/Home/Home.tsx";
 import RegisterUser from "../pages/auth/Register/Register.tsx";
+import Login from "../pages/auth/Login/Login.tsx";
 
 interface RouteI {
     path: string;
@@ -22,6 +23,10 @@ export const routes: RouteI[] = [
     {
       path: '/register',
       component: <RegisterUser />
+    },
+    {
+      path: '/login',
+      component: <Login />
     },
     {
       path: '*',

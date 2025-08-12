@@ -1,20 +1,16 @@
 import type { ReactNode } from "react";
-import styled from "styled-components"
 import Row, { type ColSizes } from "../elements/elements.types";
 import Col from "../elements/Col";
 import { Button } from "../elements/Button";
 
-const FormContainer = styled.div`
-  // display: flex;
-  max-width: 800px;
-`;
-
-export type FormFielValueType = string
+export type FormFieldValueType = string
+export type FormFieldType = 'text' | 'password'
 
 export interface FormFieldI {
   label: ReactNode | string;
-  value: FormFielValueType;
-  onChange: (val: FormFielValueType) => void;
+  value: FormFieldValueType;
+  onChange: (val: FormFieldValueType) => void;
+  type?: FormFieldType;
   mdCol?: ColSizes;
 }
 
@@ -23,25 +19,26 @@ interface FormProps {
   formFields: FormFieldI[];
   onCancel?: () => void;
   onSubmit: () => void;
+  buttonLabel: string | ReactNode;
 }
 
-const Form = ({ title, formFields, onSubmit }: FormProps) => {
+const Form = ({ title, formFields, onSubmit, buttonLabel }: FormProps) => {
 
   return (
-    <FormContainer>
+    <div>
       {title && <h2>{title}</h2>}
       <Row>
         {formFields.map((field, i) => (
           <Col key={i} md={field.mdCol ?? 12}>
             <div>{field.label}</div>
-            <input value={field.value} onChange={e => field.onChange(e.target.value)} />
+            <input value={field.value} onChange={e => field.onChange(e.target.value)} type={field.type ?? 'text'} />
           </Col>
         ))}
       </Row>
       <Row>
-        <Button onClick={onSubmit}>Submit</Button>
+        <Button onClick={onSubmit}>{buttonLabel ?? 'Submit'}</Button>
       </Row>
-    </FormContainer>
+    </div>
   )
 }
 

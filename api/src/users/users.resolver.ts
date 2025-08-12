@@ -7,7 +7,7 @@ import {
   Field,
 } from '@nestjs/graphql';
 import { UsersService } from './users.service';
-import { LoginInput } from 'src/graphql';
+import { AuthResponse, LoginInput } from 'src/graphql';
 import * as bcrypt from 'bcrypt';
 
 @InputType()
@@ -27,25 +27,26 @@ class CreateUserInput {
 
 @Resolver('User')
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly userService: UsersService) {}
 
   @Query('getUsers')
   async getUsers() {
-    return this.usersService.findAll();
+    return this.userService.findAll();
   }
 
-  @Mutation('createUser')
   async createUser(
     @Args('createUserInput') createUserInput: CreateUserInput,
-  ): Promise<string> {
-    await this.usersService.create(createUserInput);
-    return 'SUCCESS';
+  ): Promise<String> {
+    await this.userService.create(createUserInput);
+    return 'success';
   }
 
   @Mutation('login')
-  async login(@Args('loginInput') loginInput: LoginInput): Promise<string> {
-    const token = await this.usersService.login(loginInput);
-  
-    return token;
+  async login(
+    @Args('loginInput') loginInput: LoginInput,
+  ): Promise<AuthResponse> {
+    const res = await this.userService.login(loginInput);
+    console.log(res)
+    return res;
   }
 }

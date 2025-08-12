@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { User } from './user.schema';
 import * as bcrypt from 'bcrypt';
 import { generateToken } from 'src/auth/jwt';
+import { AuthResponse, CreateUserInput, LoginInput } from 'src/graphql';
 
 @Injectable()
 export class UsersService {
@@ -11,37 +12,38 @@ export class UsersService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
-  async create(createUserInput: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-  }): Promise<User> {
-    const {password, ...rest} = createUserInput;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new this.userModel({...rest, password: hashedPassword});
-    return user.save();
-  }
-
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec();
   }
 
-  async login(input: { email: string; password: string }): Promise<string> {
-    const user = await this.findByEmail(input.email);
+  async create(createUserInput: CreateUserInput): Promise<User> {
+    const user = new this.userModel(createUserInput);
+    return user.save();
+  }
+
+  async login(loginInput: LoginInput): Promise<AuthResponse> {
+    try {
+      const user: User | null = await this.findByEmail(loginInput.email);
+      if (!user) {
+        return { token: null, error: 'Incorrect email or password' };
+      }
   
-    if (!user) {
-      throw new Error('User not found');
+      const match: boolean = await bcrypt.compare(
+        loginInput.password,
+        user.password,
+      );
+  
+      if (!match) {
+        return { token: null, error: 'Incorrect email or password' };
+      }
+  
+      const token = generateToken(user);
+      return { token, error: null };
+  
+    } catch (e) {
+      console.error(e);
+      return { token: null, error: 'Failed to login' };
     }
-  
-    const isPasswordMatch = await bcrypt.compare(input.password, user.password);
-    if (!isPasswordMatch) {
-      throw new Error('Invalid credentials');
-    }
-  
-    const token = generateToken({ userId: user.id });
-  
-    return token;
   }
 
   async findByEmail(email: string): Promise<User | null> {

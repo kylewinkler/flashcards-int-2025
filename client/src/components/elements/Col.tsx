@@ -23,7 +23,6 @@ const ColContainer = styled.div<{
   $xl?: ColSizes;
   $padding?: string;
 }>`
-  // padding: ${({ $padding }) => $padding ?? '1rem'};
   display: inline-block;
   width: ${({ $xs }) => getWidth($xs)};
 

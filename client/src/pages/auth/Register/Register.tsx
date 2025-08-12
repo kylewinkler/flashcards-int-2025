@@ -1,96 +1,104 @@
-import { useState } from "react"
-import type { FormFieldI } from "../../../components/form/Form";
-import Form from "../../../components/form/Form";
-import { useMutation } from '@apollo/client';
+import { useState } from "react";
+import Form, { type FormFieldI, type FormFieldValueType } from "../../../components/form/Form";
 import { CREATE_USER } from "./register.gql";
+import { useMutation } from "@apollo/client";
+import { useNavigate } from 'react-router';
+
 
 interface NewUserI {
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-  confirmPassword: string
+    firstName: string
+    lastName: string
+    email: string
+    password: string
+    confirmPassword: string
+
 }
 
-const defaultUser: NewUserI = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  password: '',
-  confirmPassword: ''
+const defaultRegUser: NewUserI = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: ""
 }
 
-const RegisterUser = () => {
-  const [newUser, setNewUser] = useState<NewUserI>(defaultUser);
-  const [createUser, { loading, error, data }] = useMutation(CREATE_USER);
+const Register = () => {
 
-  const updateNewUser = (field: keyof NewUserI, value: string) => {
-    setNewUser({...newUser, [field]: value})
-  }
-  
-  const formFields: FormFieldI[] = [
-    {
-      label: 'First Name',
-      value: newUser.firstName,
-      onChange: (val: string) => updateNewUser('firstName', val),
-      mdCol: 6
-    },
-    {
-      label: 'Last Name',
-      value: newUser.lastName,
-      onChange: (val: string) => updateNewUser('lastName', val),
-      mdCol: 6
-    },
-    {
-      label: 'Email',
-      value: newUser.email,
-      onChange: (val: string) => updateNewUser('email', val)
-    },
-    {
-      label: 'Password',
-      value: newUser.password,
-      onChange: (val: string) => updateNewUser('password', val),
-      mdCol: 6
-    },
-    {
-      label: 'Confirmed Password',
-      value: newUser.confirmPassword,
-      onChange: (val: string) => updateNewUser('confirmPassword', val),
-      mdCol: 6
-    }
-  ]
+    const navigate = useNavigate();
+    const [newUser, setNewUser] = useState<NewUserI>(defaultRegUser);
 
-  const handleSubmit = async () => {
-    if (newUser.password !== newUser.confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
+    const updateNewUser = (field: keyof NewUserI, value: string) => {
+        setNewUser({ ...newUser, [field]: value })
+    };
 
-    try {
-      await createUser({
+    const [createUser] = useMutation(CREATE_USER, {
         variables: {
-          createUserInput: {
-            firstName: newUser.firstName,
-            lastName: newUser.lastName,
-            email: newUser.email,
-            password: newUser.password
-          }
+            createUserInput: {
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
+                email: newUser.email,
+                password: newUser.password,
+            }
         }
-      });
+    });
 
-      alert("User created!");
-      setNewUser(defaultUser);
-    } catch (err) {
-      console.error("Create user failed", err);
+    const handleFormSubmit = async () => {
+        if (newUser.password !== newUser.confirmPassword) {
+            alert('Please make sure passwords match!')
+            return;
+        }
+
+        try {
+            const {data} = await createUser();
+
+            if (data?.createUser) {
+                setNewUser(defaultRegUser);
+                navigate('/login');
+            }
+        }
+        catch (err: any) {
+            alert(`Unable to create account: ${err.message}`);
+            return;
+        }
+
     }
-  };
 
-  if (error) return <>{error}</>
-  if (loading) return <>Registering User...</>
+    const formFields: FormFieldI[] = [
+        {
+            label: "First Name",
+            value: newUser.firstName,
+            onChange: (value: FormFieldValueType) => updateNewUser("firstName", value)
+        },
+        {
+            label: "Last Name",
+            value: newUser.lastName,
+            onChange: (value: FormFieldValueType) => updateNewUser("lastName", value)
+        },
+        {
+            label: "Email",
+            value: newUser.email,      
+            onChange: (value: FormFieldValueType) => updateNewUser("email", value)
 
-  return (
-    <Form formFields={formFields} onSubmit={() => handleSubmit()} />
-  )
-}
+        },
+        {
+            label: "Password",
+            value: newUser.password,
+            type: 'password',
+            onChange: (value: FormFieldValueType) => updateNewUser("password", value)
 
-export default RegisterUser;
+        },
+        {
+            label: "Confirm Password",
+            value: newUser.confirmPassword,
+            type: 'password',
+            onChange: (value: FormFieldValueType) => updateNewUser("confirmPassword", value)
+
+        },
+    ]
+
+    return (
+        <Form formFields={formFields} onSubmit={() => handleFormSubmit()} buttonLabel="Register"/>
+    )
+} 
+
+export default Register;
