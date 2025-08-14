@@ -4,7 +4,7 @@ import { User } from 'src/users/user.schema';
 export function generateToken(user: User) {
   const JWT_SECRET = process.env.JWT_SECRET ?? 'your-dev-secret';
   const payload = {
-    sub: user.id,
+    id: user.id,
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName

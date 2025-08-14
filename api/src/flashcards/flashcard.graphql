@@ -1,9 +1,18 @@
 type Flashcard {
-    id: ID!
-    front: String!
-    back: String!
+  id: ID!
+  front: String!
+  back: String!
+}
+
+input CreateFlashcardInput {
+  front: String!
+  back: String!
 }
 
 type Query {
-    getFlashcards: [Flashcard!]!
+  getFlashcards: [Flashcard!]!
+}
+
+type Mutation {
+  createFlashcard(createFlashcardInput: CreateFlashcardInput): String!
 }

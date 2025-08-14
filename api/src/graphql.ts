@@ -8,6 +8,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export class CreateFlashcardInput {
+    front: string;
+    back: string;
+}
+
 export class CreateUserInput {
     firstName: string;
     lastName: string;
@@ -32,6 +37,14 @@ export abstract class IQuery {
     abstract getUsers(): User[] | Promise<User[]>;
 }
 
+export abstract class IMutation {
+    abstract createFlashcard(createFlashcardInput?: Nullable<CreateFlashcardInput>): string | Promise<string>;
+
+    abstract createUser(createUserInput: CreateUserInput): string | Promise<string>;
+
+    abstract login(loginInput: LoginInput): AuthResponse | Promise<AuthResponse>;
+}
+
 export class User {
     id: string;
     firstName: string;
@@ -42,12 +55,6 @@ export class User {
 export class AuthResponse {
     token?: Nullable<string>;
     error?: Nullable<string>;
-}
-
-export abstract class IMutation {
-    abstract createUser(createUserInput: CreateUserInput): string | Promise<string>;
-
-    abstract login(loginInput: LoginInput): AuthResponse | Promise<AuthResponse>;
 }
 
 type Nullable<T> = T | null;

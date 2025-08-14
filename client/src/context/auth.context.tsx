@@ -31,7 +31,6 @@ export const AuthProvider = ({ children }: { children: ReactNode}) => {
     const decodedToken = {...jwtDecode<UserI>(token), token}
     localStorage.setItem('session', JSON.stringify(decodedToken));
     setUser(decodedToken);
-    navigate('/')
   }
 
   const logout = () => {

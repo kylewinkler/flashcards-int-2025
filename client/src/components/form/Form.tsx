@@ -19,7 +19,7 @@ interface FormProps {
   formFields: FormFieldI[];
   onCancel?: () => void;
   onSubmit: () => void;
-  buttonLabel: string | ReactNode;
+  buttonLabel?: string | ReactNode;
 }
 
 const Form = ({ title, formFields, onSubmit, buttonLabel }: FormProps) => {

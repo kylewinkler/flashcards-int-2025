@@ -1,9 +1,9 @@
 import type {ReactNode} from "react";
 import Flashcards from "../pages/Flashcards/Flaschards.tsx";
-import Home from "../pages/Home/Home.tsx";
 import RegisterUser from "../pages/Auth/Register/Register.tsx";
 import Login from "../pages/Auth/Login/Login.tsx";
 import Logout from "../pages/Auth/Logout.tsx";
+import CreateFlashcard from "../pages/Flashcards/CreateCard/CreateFlashcard.tsx";
 
 interface RouteI {
     path: string;
@@ -17,6 +17,10 @@ export const routes: RouteI[] = [
       label: "Flashcards",
       component: <Flashcards/>,
       protected: true
+    },
+    {
+      path: '/flashcards/create',
+      component: <CreateFlashcard />
     },
     {
       path: '/register',
