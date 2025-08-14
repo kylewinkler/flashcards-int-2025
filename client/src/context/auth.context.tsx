@@ -1,6 +1,7 @@
 import { createContext, type ReactNode, useEffect, useState, useContext } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { extractTokenFromStorage } from "../utils/auth";
 
 export interface UserI {
     email: string;
@@ -18,47 +19,48 @@ interface AuthContextI {
 const AuthContext = createContext<AuthContextI | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode}) => {
-    const [user, setUser] = useState<UserI | null>(null);
-    const navigate = useNavigate();
+  const [user, setUser] = useState<UserI | null>(null);
+  const navigate = useNavigate();
 
-function isValidJWT(token: string): boolean {
-  return token.split('.').length === 3;
-}
+  function isValidJWT(token: string): boolean {
+    return token.split('.').length === 3;
+  }
 
-const login = (token: string) => {
-  console.log(token)
+  const login = (token: string) => {
     if (!isValidJWT(token)) throw new Error("Invalid token format");
-    localStorage.setItem('session', token);
-    const decodedToken = jwtDecode<UserI>(token);
+    const decodedToken = {...jwtDecode<UserI>(token), token}
+    localStorage.setItem('session', JSON.stringify(decodedToken));
     setUser(decodedToken);
-}
+    navigate('/')
+  }
 
-    const logout = () => {
+  const logout = () => {
+    localStorage.removeItem('session');
+    setUser(null);
+    navigate('/login', {
+        replace: true
+    })
+  }
+
+  // handle session management when the context resets, if user still has valid jwt token
+  useEffect(() => {
+    const token = extractTokenFromStorage();
+    if (token) {
+      try {
+        login(token)
+      } catch (error) {
+        console.error("Invalid token in localStorage:", error);
         localStorage.removeItem('session');
         setUser(null);
-        navigate('/login', {
-            replace: true
-        })
-    }
-
-    useEffect(() => {
-      const token: string | null = localStorage.getItem('session');
-      if (token) {
-          try {
-              login(token);
-          } catch (error) {
-              console.error("Invalid token in localStorage:", error);
-              localStorage.removeItem('session');
-              setUser(null);
-          }
       }
+    }
   }, []);
 
-    return (
-        <AuthContext.Provider value={{ user, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export const useAuthContext = () => {

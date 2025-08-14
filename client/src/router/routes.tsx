@@ -9,17 +9,14 @@ interface RouteI {
     path: string;
     label?: string;
     component: ReactNode;
+    protected?: boolean;
 }
 export const routes: RouteI[] = [
     {
-      path: '/flashcards',
-      label: "Flashcards",
-      component: <Flashcards/>
-    },
-    {
       path: '/',
-      label: "Home",
-      component: <Home/>
+      label: "Flashcards",
+      component: <Flashcards/>,
+      protected: true
     },
     {
       path: '/register',

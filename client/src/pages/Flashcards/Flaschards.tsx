@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import styled from "styled-components";
 import {gql, useQuery} from '@apollo/client';
+import { useAuthContext } from '../../context/auth.context';
 
 
 interface GetFlashcardsDataI {
@@ -36,6 +37,7 @@ const Flashcards = () => {
     const [displayIdx, setDisplayIdx] = useState<number>(0);
     const { loading, error, data } = useQuery<GetFlashcardsDataI>(GET_FLASHCARDS);
     const cards = data?.getFlashcards || [];
+    const { user } = useAuthContext();
 
     const handleClick = (id: number) => {
         if (showingCards.find(oldId => oldId === id)) {

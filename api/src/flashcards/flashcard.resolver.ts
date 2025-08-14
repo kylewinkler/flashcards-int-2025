@@ -8,7 +8,6 @@ export class FlashcardResolver {
   @Query('getFlashcards')
   @UseGuards(GqlAuthGuard)
   getFlashcards(@CurrentUser() user: any) {
-    console.log('Authenticated user:', user);
     
     return [
       { id: 1, front: 'Movie', back: 'Pelicula' },

@@ -46,7 +46,6 @@ export class UsersResolver {
     @Args('loginInput') loginInput: LoginInput,
   ): Promise<AuthResponse> {
     const res = await this.userService.login(loginInput);
-    console.log(res)
     return res;
   }
 }

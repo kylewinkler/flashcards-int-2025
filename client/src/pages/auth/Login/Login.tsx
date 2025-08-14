@@ -1,5 +1,5 @@
 import { useAuthContext } from "../../../context/auth.context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Form, { type FormFieldValueType, type FormFieldI } from "../../../components/form/Form";
 import { LOGIN_USER } from "./login.gql";
 import { useMutation } from "@apollo/client";
@@ -16,11 +16,8 @@ const defaultLoginUser: LoginI = {
 }
 
 const Login = () => {
-
     const navigate = useNavigate();
-
-    const { login } = useAuthContext();
-    
+    const { login, user } = useAuthContext();
     const [newUser, setNewUser] = useState<LoginI>(defaultLoginUser);
     
     const updateNewUser = (field: keyof LoginI, value: string) => {
@@ -65,6 +62,10 @@ const Login = () => {
             onChange: (value: FormFieldValueType) => updateNewUser("password", value)
         }
     ]
+    
+    useEffect(() => {
+      if (user) navigate('/');
+    }, [])
     
     return (
        <Form formFields={formFields} onSubmit={() => handleFormSubmit()} buttonLabel="Log In"/>
