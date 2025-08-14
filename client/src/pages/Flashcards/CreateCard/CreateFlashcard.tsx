@@ -16,7 +16,6 @@ const defaultCreateCard: CreateFlashcardI = {
 
 const CreateFlashcard = () => {
   const [newCard, setNewCard] = useState(defaultCreateCard);
-
   const [createCard] = useMutation(CREATE_CARD, {
     variables: {
         createFlashcardInput: newCard
@@ -26,7 +25,7 @@ const CreateFlashcard = () => {
 const handleCreateCard = async() => {
   try {
     const { data } = await createCard();
-    console.log(data )
+
     if (data?.createFlashcard) {
         setNewCard(defaultCreateCard);
     }

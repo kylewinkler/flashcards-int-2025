@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Flashcard } from './flashcard.schema';
-import { Types } from 'mongoose';
 
 @Injectable()
 export class FlashcardsService {

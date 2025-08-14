@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styled from "styled-components";
-import { gql, useQuery } from '@apollo/client';
-import { useAuthContext } from '../../context/auth.context';
+import { useQuery } from '@apollo/client';
+import { GET_FLASHCARDS } from './flashcards.gql';
 
 interface GetFlashcardsDataI {
   getFlashcards: FlashcardI[];
@@ -11,16 +11,6 @@ interface FlashcardI {
   front: string;
   back: string;
 }
-
-const GET_FLASHCARDS = gql`
-  query {
-    getFlashcards {
-      id
-      front
-      back
-    }
-  }
-`
 
 const Flashcard = styled.div`
   padding: 1rem;
@@ -36,7 +26,6 @@ const Flashcards = () => {
   const [displayIdx, setDisplayIdx] = useState<number>(0);
   const { loading, error, data } = useQuery<GetFlashcardsDataI>(GET_FLASHCARDS);
   const cards = data?.getFlashcards || [];
-  const { user } = useAuthContext();
 
   const handleClick = (id: number) => {
     if (showingCards.find(oldId => oldId === id)) {

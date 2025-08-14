@@ -10,6 +10,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UsersModule } from './users/users.module';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
+import { FoldersModule } from './folders/folders.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { AuthModule } from './auth/auth.module';
     MongooseModule.forRoot(process.env.MONGO_CONNECTION_STRING || ''),
     FlashcardsModule,
     UsersModule,
-    AuthModule
+    AuthModule,
+    FoldersModule
   ],
   controllers: [AppController],
   providers: [AppService],
