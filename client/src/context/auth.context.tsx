@@ -1,7 +1,7 @@
 import { createContext, type ReactNode, useEffect, useState, useContext } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { extractTokenFromStorage } from "../utils/auth";
+import { extractTokenFromStorage, isTokenExpired } from "../utils/auth";
 
 export interface UserI {
     email: string;
@@ -41,17 +41,12 @@ export const AuthProvider = ({ children }: { children: ReactNode}) => {
     })
   }
 
-  // handle session management when the context resets, if user still has valid jwt token
   useEffect(() => {
     const token = extractTokenFromStorage();
-    if (token) {
-      try {
-        login(token)
-      } catch (error) {
-        console.error("Invalid token in localStorage:", error);
-        localStorage.removeItem('session');
-        setUser(null);
-      }
+    if (token && !isTokenExpired(token)) {
+      login(token)
+    } else {
+      logout();
     }
   }, []);
 
