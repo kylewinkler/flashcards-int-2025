@@ -23,7 +23,6 @@ const defaultRegUser: NewUserI = {
 }
 
 const Register = () => {
-
     const navigate = useNavigate();
     const [newUser, setNewUser] = useState<NewUserI>(defaultRegUser);
 
