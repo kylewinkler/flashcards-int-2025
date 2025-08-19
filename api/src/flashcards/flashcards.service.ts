@@ -11,7 +11,6 @@ export class FlashcardsService {
   ) {}
 
   async findAll(userId: string) {
-    console.log(userId)
     return await this.flashcardModel.find({ userId });
   }
 

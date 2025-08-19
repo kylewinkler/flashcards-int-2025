@@ -3,7 +3,6 @@ import { GET_FOLDER } from "./getFolder.gql";
 import { useQuery } from "@apollo/client";
 import Row from "../../../components/elements/elements.types";
 import Col from "../../../components/elements/Col";
-import { useEffect, useState } from "react";
 
 interface FolderI {
   name: string
@@ -11,19 +10,13 @@ interface FolderI {
 }
 
 const Folder = () => {
-  const [folder, setFolder] = useState<FolderI>();
   const  { folderId } = useParams();
-
   const { loading, error, data } = useQuery(GET_FOLDER, {
     variables: { id: folderId },
     skip: !folderId,
   });
 
-  useEffect(() => {
-    if (data?.getFolder) {
-      setFolder(data.getFolder);
-    }
-  }, [data]);
+  const folder: FolderI = data?.getFolder;
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error! {error.message}</p>;

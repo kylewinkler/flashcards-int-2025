@@ -11,13 +11,11 @@ export class FlashcardResolver {
 
   @Query('getFlashcards')
   getFlashcards(@CurrentUser() user: any) {
-    console.log('CurrentUser in getFlashcards:', user);
     return this.flaschardService.findAll(user.id);
   }
 
   @Mutation('createFlashcard')
   createFlashcard(@CurrentUser() user: any, @Args('createFlashcardInput') input: any) {
-    console.log(user)
     return this.flaschardService.create(user.id, input);
   }
 }
