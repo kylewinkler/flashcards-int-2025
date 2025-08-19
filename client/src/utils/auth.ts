@@ -9,7 +9,6 @@ export const extractTokenFromStorage = () => {
 
 export const isTokenExpired = (token: string) => {
   const exp = jwtDecode(token).exp;
-  console.log(exp)
   const now = Math.floor(Date.now() / 1000); 
   
   return exp! < now;
